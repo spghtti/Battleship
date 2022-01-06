@@ -10,18 +10,22 @@ test('place 3-long ship', () => {
     [1, 3],
   ]);
 });
-
 test('create a two-ship fleet', () => {
   const playerOne = gameboard();
   playerOne.placeShip(3, 'schooner', 1, 1, 1, 3);
   playerOne.placeShip(2, 'frigate', 2, 1, 2, 2);
   expect(playerOne.fleet.length).toEqual(2);
 });
-// THIS IS RETURNING UNDEFINED
 test('check for hit', () => {
   const playerOne = gameboard();
   playerOne.placeShip(3, 'schooner', 1, 1, 1, 3);
   playerOne.placeShip(2, 'frigate', 2, 1, 2, 2);
   playerOne.receiveAttack(1, 2);
-  expect(playerOne.fleet[0].hitPositions[0]).toBe([1, 2]);
+  expect(playerOne.fleet[0].hitPositions[0]).toStrictEqual([1, 2]);
+});
+test('check for miss', () => {
+  const p1 = gameboard();
+  p1.placeShip(3, 'schooner', 1, 1, 1, 3);
+  p1.receiveAttack(1, 4);
+  expect(p1.missedAttacks[0]).toStrictEqual([1, 4]);
 });
