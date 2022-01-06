@@ -1,17 +1,20 @@
 /* eslint-disable prefer-const */
 const shipFactory = (length) => {
-  let health = length;
-  let position;
-  const destroy = () => {
-    // do something
+  let name = '';
+  let hitPositions = [];
+  let positions = [];
+  const isSunk = () => (hitPositions.length === 0 ? 'Sunk' : 'Not sunk');
+  const hit = (x, y) => {
+    hitPositions.push([x, y]);
   };
-  const takeHit = () => {
-    health -= 1;
-    if (health === 0) {
-      destroy();
-    }
+  return {
+    name,
+    positions,
+    hitPositions,
+    isSunk,
+    length,
+    hit,
   };
-  return { length, takeHit };
 };
 
 module.exports = shipFactory;
