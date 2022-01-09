@@ -38,11 +38,15 @@ const gameboard = () => {
       }
     }
   };
+  const nextTurn = () => {
+    currentTurn++;
+  };
   return {
     fleet,
     placeShip,
     receiveAttack,
     missedAttacks,
+    nextTurn,
   };
 };
 
