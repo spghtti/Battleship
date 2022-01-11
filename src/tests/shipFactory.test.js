@@ -5,8 +5,16 @@ test('Create 3-long ship', () => {
 });
 
 test('Test sink', () => {
-  const boat = shipFactory(2);
-  expect(boat.isSunk()).toBe('Sunk');
+  const schooner = shipFactory(2);
+  schooner.positions = [
+    [1, 1],
+    [1, 2],
+  ];
+  schooner.hitPositions = [
+    [1, 1],
+    [1, 2],
+  ];
+  expect(schooner.isSunk()).toBe(true);
 });
 
 test('Not sunk', () => {
@@ -15,5 +23,6 @@ test('Not sunk', () => {
     [1, 1],
     [1, 2],
   ];
-  expect(boat.isSunk()).toBe('Sunk');
+  boat.hitPositions = [[1, 1]];
+  expect(boat.isSunk()).toBe(false);
 });

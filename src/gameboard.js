@@ -3,6 +3,7 @@
 const shipFactory = require('./shipFactory');
 
 const gameboard = () => {
+  let name = '';
   let missedAttacks = [];
   let fleet = [];
   const placeShip = (length, name, x1, y1, x2, y2) => {
@@ -30,6 +31,9 @@ const gameboard = () => {
       for (let j = 0; j < Object.keys(fleet[i].positions).length; j++) {
         if (arrayEquals(fleet[i].positions[j], [x, y])) {
           fleet[i].hit(x, y);
+          if (fleet[i].isSunk()) {
+            fleet.splice(i, 1);
+          }
           hit = true;
         }
       }
@@ -38,15 +42,12 @@ const gameboard = () => {
       }
     }
   };
-  const nextTurn = () => {
-    currentTurn++;
-  };
   return {
+    name,
     fleet,
     placeShip,
     receiveAttack,
     missedAttacks,
-    nextTurn,
   };
 };
 
