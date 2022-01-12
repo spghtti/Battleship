@@ -23,6 +23,12 @@ test('check for hit', () => {
   playerOne.receiveAttack(1, 2);
   expect(playerOne.fleet[0].hitPositions[0]).toStrictEqual([1, 2]);
 });
+test('check for sink', () => {
+  const playerOne = gameboard();
+  playerOne.placeShip(1, 'sailboat', 2, 1, 2, 1);
+  playerOne.receiveAttack(2, 1);
+  expect(playerOne.fleet[0].isSunk()).toBe(true);
+});
 test('check for miss', () => {
   const p1 = gameboard();
   p1.placeShip(3, 'schooner', 1, 1, 1, 3);
