@@ -1,13 +1,23 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable wrap-iife */
-const grid = document.getElementById('grid-one');
 
 (function createGrid() {
-  const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-  const rowCount = 1;
-  for (let i = 0; i < 121; i++) {
-    const cell = document.createElement('div');
-    cell.innerText = i + 1;
-    grid.appendChild(cell).className = 'cell';
+  const gridOne = document.getElementById('grid-one');
+  for (let y = 0; y < 10; y++) {
+    const row = document.createElement('tr');
+    const rowHeader = document.createElement('th');
+    rowHeader.innerText = y + 1;
+    gridOne.appendChild(row).className = 'table-row';
+    row.appendChild(rowHeader).className = 'table-row-header';
+    for (let x = 0; x < 10; x++) {
+      const cell = document.createElement('td');
+      // cell.innerText = [x + 1, y + 1];
+      cell.setAttribute('value', `[${x + 1}, ${y + 1}]`);
+      row.appendChild(cell).className = 'table-cell';
+    }
   }
+})();
+
+(function assignCoordinates() {
+  const cells = document.getElementsByClassName('slide');
 })();
