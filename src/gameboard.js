@@ -2,8 +2,7 @@
 /* eslint-disable prefer-const */
 const shipFactory = require('./shipFactory');
 
-const gameboard = () => {
-  let name = '';
+const gameboard = (playerName, isCPU) => {
   let missedAttacks = [];
   let fleet = [];
   const placeShip = (length, name, x1, y1, x2, y2) => {
@@ -33,13 +32,23 @@ const gameboard = () => {
           hit = true;
         }
       }
-      if (hit === false) {
-        missedAttacks.push([x, y]);
-      }
+    }
+    if (hit === false) {
+      missedAttacks.push([x, y]);
     }
   };
+  const receiveRandomAttack = () => {
+    receiveAttack(
+      Math.floor(Math.random() * 10) + 1,
+      Math.floor(Math.random() * 10) + 1
+    );
+  };
+  // const checkForLoss = () = {
+  //   if
+  // }
   return {
-    name,
+    receiveRandomAttack,
+    playerName,
     fleet,
     placeShip,
     receiveAttack,
