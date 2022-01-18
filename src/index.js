@@ -2,7 +2,7 @@
 /* eslint-disable wrap-iife */
 const { p1, CPU } = require('./battleship');
 
-(function createGrid() {
+(function drawGrids() {
   const gridOne = document.getElementById('grid-one');
   const gridTwo = document.getElementById('grid-two');
   for (let y = 0; y < 10; y++) {
@@ -13,7 +13,6 @@ const { p1, CPU } = require('./battleship');
     row.appendChild(rowHeader).className = 'table-row-header';
     for (let x = 0; x < 10; x++) {
       const cell = document.createElement('td');
-      // cell.innerText = [x + 1, y + 1];
       cell.setAttribute('value', `${x + 1}, ${y + 1}`);
       row.appendChild(cell).className = 'gridOne-table-cell';
     }
@@ -26,7 +25,6 @@ const { p1, CPU } = require('./battleship');
     row.appendChild(rowHeader).className = 'table-row-header';
     for (let x = 0; x < 10; x++) {
       const cell = document.createElement('td');
-      // cell.innerText = [x + 1, y + 1];
       cell.setAttribute('value', `${x + 1}, ${y + 1}`);
       row.appendChild(cell).className = 'gridTwo-table-cell';
     }
@@ -54,6 +52,9 @@ function splitter(arr) {
   for (let i = 0; i < cells.length; i++) {
     const x = splitter(cells[i].attributes.value.value)[0];
     const y = splitter(cells[i].attributes.value.value)[1];
+    cells[i].addEventListener('click', function () {
+      renderHitsAndMisses(this);
+    });
     cells[i].addEventListener('click', () => {
       CPU.receiveAttack(x, y);
     });
@@ -62,3 +63,21 @@ function splitter(arr) {
     });
   }
 })();
+
+const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
+
+function renderHitsAndMisses(cell) {
+  const coords = splitter(cell.attributes.value.value);
+  let hit = false;
+  for (let i = 0; i < CPU.fleet.length; i++) {
+    for (let j = 0; j < Object.keys(CPU.fleet[i].positions).length; j++) {
+      if (arrayEquals(CPU.fleet[i].positions[j], coords)) {
+        cell.innerHTML = 'X';
+        hit = true;
+      }
+    }
+  }
+  if (hit === false) {
+    cell.innerHTML = 'O';
+  }
+}

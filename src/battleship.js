@@ -27,8 +27,5 @@ CPU.placeShip(3, 'frigate', 2, 5, 2, 7);
 CPU.placeShip(3, 'frigate', 8, 5, 10, 5);
 CPU.placeShip(4, 'cruiser', 7, 10, 10, 10);
 
-p1.receiveRandomAttack();
-console.log(p1);
-
 exports.p1 = p1;
 exports.CPU = CPU;

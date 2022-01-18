@@ -3,9 +3,10 @@ const shipFactory = (length) => {
   const name = '';
   const positions = [];
   const hitPositions = [];
-  const isSunk = function () {
+  function isSunk() {
+    console.log('Sunk');
     return this.hitPositions.length === length;
-  };
+  }
   const indexOfArray = (val, arr) => {
     let hash = {};
     for (let i = 0; i < arr.length; i++) {
