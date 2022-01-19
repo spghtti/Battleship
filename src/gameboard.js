@@ -24,19 +24,21 @@ const gameboard = (playerName, isCPU) => {
   };
   const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
   const receiveAttack = (x, y) => {
+    const status = document.getElementById('status');
     let hit = false;
     for (let i = 0; i < fleet.length; i++) {
       for (let j = 0; j < Object.keys(fleet[i].positions).length; j++) {
         if (arrayEquals(fleet[i].positions[j], [x, y])) {
-          console.log('hit');
           fleet[i].hit(x, y);
-          fleet[i].isSunk();
+          fleet[i].isSunk()
+            ? (status.textContent = 'Sunk!')
+            : (status.textContent = 'Hit!');
           hit = true;
         }
       }
     }
     if (hit === false) {
-      console.log('miss');
+      status.textContent = 'Miss.';
       missedAttacks.push([x, y]);
     }
   };
