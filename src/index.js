@@ -42,31 +42,6 @@ function drawGrids() {
   }
 }
 
-function addGridListeners() {
-  const cells = document.querySelectorAll('.gridTwo-table-cell');
-  for (let i = 0; i < cells.length; i++) {
-    const x = splitter(cells[i].attributes.value.value)[0];
-    const y = splitter(cells[i].attributes.value.value)[1];
-    cells[i].addEventListener('click', function () {
-      renderHitsAndMisses(this);
-      CPU.receiveAttack(x, y);
-      console.log(CPU);
-      cells[i].className += ' inactive';
-    });
-    // cells[i].addEventListener('hover', () => {});
-    // cells[i].addEventListener('click', () => {});
-  }
-}
-
-drawGrids();
-addGridListeners();
-
-const button = document.getElementById('new-game-button');
-button.addEventListener('click', () => {
-  drawGrids();
-  addGridListeners();
-});
-
 function splitter(arr) {
   const array = arr.split(', ');
   const newArray = [];
@@ -75,13 +50,6 @@ function splitter(arr) {
   }
   return newArray;
 }
-
-// const renderShips = () => {
-//   const cells = querySelectorAll('.gridOne-table-cell');
-//   for (let i = 0; i < cells.length; i++) {
-
-//   }
-// };
 
 const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
 
@@ -100,3 +68,37 @@ function renderHitsAndMisses(cell) {
     cell.style.background = 'rgba(192, 192, 192, 0.75)';
   }
 }
+
+function addGridListeners() {
+  const cells = document.querySelectorAll('.gridTwo-table-cell');
+  const status = document.getElementById('status');
+  const gameboard = document.getElementById('gameboards');
+  for (let i = 0; i < cells.length; i++) {
+    const x = splitter(cells[i].attributes.value.value)[0];
+    const y = splitter(cells[i].attributes.value.value)[1];
+    cells[i].addEventListener('click', function () {
+      renderHitsAndMisses(this);
+      CPU.receiveAttack(x, y);
+      console.log(CPU);
+      cells[i].className += ' inactive';
+    });
+    cells[i].addEventListener('click', () => {
+      gameboard.className += ' inactive';
+      setTimeout(() => {
+        p1.receiveRandomAttack();
+        console.log(p1);
+        gameboard.className -= ' inactive';
+      }, 2000);
+    });
+  }
+}
+
+drawGrids();
+addGridListeners();
+
+const button = document.getElementById('new-game-button');
+button.addEventListener('click', () => {
+  // Needs to restore player ships
+  drawGrids();
+  addGridListeners();
+});
