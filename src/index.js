@@ -53,19 +53,62 @@ function splitter(arr) {
 
 const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
 
-function renderHitsAndMisses(cell) {
+function renderCPUattacks() {
+  const misses = p1.missedAttacks;
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  for (let i = 0; i < misses.length; i++) {
+    for (let j = 0; j < cells.length; j++) {
+      if (arrayEquals(misses[i], splitter(cells[j].attributes.value.value))) {
+        cells[j].style.background = 'rgb(109, 109, 109)';
+      }
+    }
+  }
+  for (let k = 0; k < p1.fleet.length; k++) {
+    for (let l = 0; l < Object.keys(p1.fleet[k].hitPositions).length; l++) {
+      for (let m = 0; m < cells.length; m++) {
+        if (
+          arrayEquals(
+            p1.fleet[k].hitPositions[l],
+            splitter(cells[m].attributes.value.value)
+          )
+        ) {
+          cells[m].style.background = 'rgba(255, 0, 0, 0.75)';
+        }
+      }
+    }
+  }
+}
+function renderPlayerAttacks(cell) {
   const coords = splitter(cell.attributes.value.value);
   let hit = false;
   for (let i = 0; i < CPU.fleet.length; i++) {
     for (let j = 0; j < Object.keys(CPU.fleet[i].positions).length; j++) {
       if (arrayEquals(CPU.fleet[i].positions[j], coords)) {
-        cell.style.background = 'rgba(255, 0, 0, 0.5)';
+        cell.style.background = 'rgba(38, 0, 255, 0.75)';
         hit = true;
       }
     }
   }
   if (hit === false) {
-    cell.style.background = 'rgba(192, 192, 192, 0.75)';
+    cell.style.background = 'rgb(109, 109, 109)';
+  }
+}
+
+function renderPlayerShips() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  for (let i = 0; i < p1.fleet.length; i++) {
+    for (let j = 0; j < p1.fleet[i].positions.length; j++) {
+      for (let k = 0; k < cells.length; k++) {
+        if (
+          arrayEquals(
+            p1.fleet[i].positions[j],
+            splitter(cells[k].attributes.value.value)
+          )
+        ) {
+          cells[k].style.background = 'rgba(38, 0, 255, 0.5)';
+        }
+      }
+    }
   }
 }
 
@@ -77,7 +120,7 @@ function addGridListeners() {
     const x = splitter(cells[i].attributes.value.value)[0];
     const y = splitter(cells[i].attributes.value.value)[1];
     cells[i].addEventListener('click', function () {
-      renderHitsAndMisses(this);
+      renderPlayerAttacks(this);
       CPU.receiveAttack(x, y);
       console.log(CPU);
       cells[i].className += ' inactive';
@@ -88,6 +131,7 @@ function addGridListeners() {
         p1.receiveRandomAttack();
         console.log(p1);
         gameboard.className -= ' inactive';
+        renderCPUattacks();
       }, 2000);
     });
   }
@@ -95,6 +139,7 @@ function addGridListeners() {
 
 drawGrids();
 addGridListeners();
+renderPlayerShips();
 
 const button = document.getElementById('new-game-button');
 button.addEventListener('click', () => {

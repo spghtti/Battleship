@@ -4,6 +4,7 @@ const shipFactory = (length) => {
   const positions = [];
   const hitPositions = [];
   function isSunk() {
+    // NOT REGISTERING SINKS CORRECTLY
     console.log('Sunk');
     return this.hitPositions.length === length;
   }

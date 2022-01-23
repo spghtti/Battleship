@@ -10,7 +10,7 @@ const gameboard = (playerName, isCPU) => {
     let newShip = shipFactory(length);
     newShip.name = name;
     if (x1 !== x2) {
-      const xValuesSorted = [x1, x2].sort();
+      const xValuesSorted = [x1, x2].sort((a, b) => a - b);
       for (let i = xValuesSorted[0]; i <= xValuesSorted[1]; i++) {
         newShip.positions.push([i, y1]);
       }
