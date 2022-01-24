@@ -114,7 +114,6 @@ function renderPlayerShips() {
 
 function addGridListeners() {
   const cells = document.querySelectorAll('.gridTwo-table-cell');
-  const status = document.getElementById('status');
   const gameboard = document.getElementById('gameboards');
   for (let i = 0; i < cells.length; i++) {
     const x = splitter(cells[i].attributes.value.value)[0];
@@ -137,6 +136,13 @@ function addGridListeners() {
   }
 }
 
+function clearPlayerData() {
+  p1.fleet = [];
+  p1.missedAttacks = [];
+  CPU.fleet = [];
+  CPU.missedAttacks = [];
+}
+
 drawGrids();
 addGridListeners();
 renderPlayerShips();
@@ -146,4 +152,5 @@ button.addEventListener('click', () => {
   // Needs to restore player ships
   drawGrids();
   addGridListeners();
+  clearPlayerData();
 });

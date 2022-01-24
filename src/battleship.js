@@ -3,7 +3,7 @@ const gameboard = require('./gameboard');
 const turn = 0;
 
 const p1 = gameboard('Matt', false);
-const CPU = gameboard('Bot', true);
+const CPU = gameboard('Computer', true);
 
 p1.placeShip(1, 'boat', 4, 1, 4, 1);
 p1.placeShip(1, 'boat', 4, 6, 4, 6);

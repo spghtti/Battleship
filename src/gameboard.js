@@ -31,7 +31,7 @@ const gameboard = (playerName, isCPU) => {
         if (arrayEquals(fleet[i].positions[j], [x, y])) {
           fleet[i].hit(x, y);
           if (fleet[i].isSunk()) {
-            hitStatus.textContent = `${fleet[i].name} has been sunk!`;
+            hitStatus.textContent = `${playerName}'s ${fleet[i].name} has been sunk!`;
           }
           hit = true;
         }
@@ -47,9 +47,16 @@ const gameboard = (playerName, isCPU) => {
       Math.floor(Math.random() * 10) + 1
     );
   };
-  // const checkForLoss = () = {
-  //   if
-  // }
+  const checkForLoss = () => {
+    const status = document.getElementById('status');
+    const sum = 0;
+    for (let i = 0; i < fleet.length; i++) {
+      sum += fleet[i].positions.length;
+    }
+    if (sum === 0) {
+      status.textContent = 'Game over!';
+    }
+  };
   return {
     // checkForLoss,
     arrayEquals,
