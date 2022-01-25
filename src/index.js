@@ -119,19 +119,23 @@ function addGridListeners() {
     const x = splitter(cells[i].attributes.value.value)[0];
     const y = splitter(cells[i].attributes.value.value)[1];
     cells[i].addEventListener('click', function () {
-      renderPlayerAttacks(this);
-      CPU.receiveAttack(x, y);
-      console.log(CPU);
-      cells[i].className += ' inactive';
+      if (!p1.checkForLoss() && !CPU.checkForLoss()) {
+        renderPlayerAttacks(this);
+        CPU.receiveAttack(x, y);
+        console.log(CPU);
+        cells[i].className += ' inactive';
+      }
     });
     cells[i].addEventListener('click', () => {
       gameboard.className += ' inactive';
-      setTimeout(() => {
-        p1.receiveRandomAttack();
-        console.log(p1);
-        gameboard.className -= ' inactive';
-        renderCPUattacks();
-      }, 2000);
+      if (!p1.checkForLoss() && !CPU.checkForLoss()) {
+        setTimeout(() => {
+          p1.receiveRandomAttack();
+          console.log(p1);
+          gameboard.className -= ' inactive';
+          renderCPUattacks();
+        }, 2000);
+      }
     });
   }
 }

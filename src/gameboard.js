@@ -48,17 +48,19 @@ const gameboard = (playerName, isCPU) => {
     );
   };
   const checkForLoss = () => {
-    const status = document.getElementById('status');
-    const sum = 0;
+    const winStatus = document.getElementById('status');
+    let sum = 0;
     for (let i = 0; i < fleet.length; i++) {
       sum += fleet[i].positions.length;
     }
     if (sum === 0) {
-      status.textContent = 'Game over!';
+      winStatus.textContent = 'Game over!';
+      return true;
     }
+    return false;
   };
   return {
-    // checkForLoss,
+    checkForLoss,
     arrayEquals,
     receiveRandomAttack,
     playerName,
