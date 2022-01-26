@@ -3,10 +3,10 @@
 const shipFactory = require('./shipFactory');
 
 const gameboard = (playerName, isCPU) => {
+  let attacks = [];
   let missedAttacks = [];
   let fleet = [];
   const placeShip = (length, name, x1, y1, x2, y2) => {
-    // Fill the ship's coordinates between its start and end points.
     let newShip = shipFactory(length);
     newShip.name = name;
     if (x1 !== x2) {
@@ -32,20 +32,32 @@ const gameboard = (playerName, isCPU) => {
           fleet[i].hit(x, y);
           if (fleet[i].isSunk()) {
             hitStatus.textContent = `${playerName}'s ${fleet[i].name} has been sunk!`;
+            attacks.push([x, y]);
+            return 'sink';
           }
-          hit = true;
+          attacks.push([x, y]);
+          return 'hit';
         }
       }
     }
-    if (hit === false) {
-      missedAttacks.push([x, y]);
-    }
+    missedAttacks.push([x, y]);
+    return 'miss';
   };
-  const receiveRandomAttack = () => {
-    receiveAttack(
-      Math.floor(Math.random() * 10) + 1,
-      Math.floor(Math.random() * 10) + 1
-    );
+  const searchAOA = (arr, coords) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (arrayEquals(arr[i], coords)) return true;
+    }
+    return false;
+  };
+  const receiveCpuAttack = () => {
+    let allAttacks = attacks.concat(missedAttacks);
+    let x = Math.floor(Math.random() * 10) + 1;
+    let y = Math.floor(Math.random() * 10) + 1;
+    while (searchAOA(allAttacks, [x, y])) {
+      x = Math.floor(Math.random() * 10) + 1;
+      y = Math.floor(Math.random() * 10) + 1;
+    }
+    receiveAttack(x, y);
   };
   const checkForLoss = () => {
     const winStatus = document.getElementById('status');
@@ -62,11 +74,12 @@ const gameboard = (playerName, isCPU) => {
   return {
     checkForLoss,
     arrayEquals,
-    receiveRandomAttack,
+    receiveCpuAttack,
     playerName,
     fleet,
     placeShip,
     receiveAttack,
+    attacks,
     missedAttacks,
   };
 };

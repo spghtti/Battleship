@@ -1,0 +1,107 @@
+th {
+  vertical-align: middle;
+  font-size: 12px;
+}
+.gridTwo-table-cell,
+.gridOne-table-cell {
+  width: 32px;
+  height: 32px;
+}
+.gridTwo-table-cell {
+  cursor: pointer;
+  border: 1px solid rgba(255, 0, 0, 0.5);
+}
+.gridTwo-table-cell:hover {
+  -webkit-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  background-color: rgba(38, 0, 255, 0.25);
+  transform: scale(1.2);
+  transition: 0.15s ease-in;
+}
+.gridOne-table-cell {
+  border: 1px solid rgba(38, 0, 255, 0.5);
+  transition: 0.15s ease-in;
+}
+.grid {
+  width: 340px;
+  height: 340px;
+}
+#title {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 35px;
+}
+table,
+div,
+th,
+tr,
+button {
+  font-family: 'Open Sans', sans-serif;
+}
+#gameboards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 50vh;
+  min-height: 500px;
+  margin-top: 10vh;
+  gap: 5vw;
+  animation-name: fadeIn;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
+}
+#header {
+  margin-top: 20px;
+  margin-left: 30px;
+}
+.player-name {
+  display: flex;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+#status {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5rem;
+  transform: scale(1.2);
+  transition: 0.15s ease-in;
+}
+.inactive {
+  pointer-events: none;
+}
+.circle {
+  border-radius: 50%;
+  width: 32.5px;
+  height: 33px;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#new-game-container {
+  margin-top: 20px;
+  display: flex;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+}
+#new-game-button {
+  width: 200px;
+  height: 50px;
+  border: 1px solid #777777;
+  border-radius: 5px;
+  font-size: 16px;
+}
+#status-container {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}

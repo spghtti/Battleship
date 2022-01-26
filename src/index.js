@@ -130,7 +130,7 @@ function addGridListeners() {
       gameboard.className += ' inactive';
       if (!p1.checkForLoss() && !CPU.checkForLoss()) {
         setTimeout(() => {
-          p1.receiveRandomAttack();
+          p1.receiveCpuAttack();
           console.log(p1);
           gameboard.className -= ' inactive';
           renderCPUattacks();
