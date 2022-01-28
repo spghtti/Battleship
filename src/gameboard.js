@@ -3,9 +3,11 @@
 const shipFactory = require('./shipFactory');
 
 const gameboard = (playerName, isCPU) => {
-  let attacks = [];
-  let missedAttacks = [];
+  let enemyHits = [];
+  let missedEnemyAttacks = [];
+  let sinks = [];
   let fleet = [];
+
   const placeShip = (length, name, x1, y1, x2, y2) => {
     let newShip = shipFactory(length);
     newShip.name = name;
@@ -22,43 +24,86 @@ const gameboard = (playerName, isCPU) => {
     }
     fleet.push(newShip);
   };
+
   const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
+
   const receiveAttack = (x, y) => {
     const hitStatus = document.getElementById('status');
-    let hit = false;
     for (let i = 0; i < fleet.length; i++) {
       for (let j = 0; j < Object.keys(fleet[i].positions).length; j++) {
         if (arrayEquals(fleet[i].positions[j], [x, y])) {
           fleet[i].hit(x, y);
           if (fleet[i].isSunk()) {
             hitStatus.textContent = `${playerName}'s ${fleet[i].name} has been sunk!`;
-            attacks.push([x, y]);
+            enemyHits.push([x, y]);
+            sinks.push([x, y]);
             return 'sink';
           }
-          attacks.push([x, y]);
+          enemyHits.push([x, y]);
           return 'hit';
         }
       }
     }
-    missedAttacks.push([x, y]);
+    missedEnemyAttacks.push([x, y]);
     return 'miss';
   };
+
   const searchAOA = (arr, coords) => {
+    // Function to search an array of arrays
     for (let i = 0; i < arr.length; i++) {
       if (arrayEquals(arr[i], coords)) return true;
     }
     return false;
   };
+
   const receiveCpuAttack = () => {
-    let allAttacks = attacks.concat(missedAttacks);
-    let x = Math.floor(Math.random() * 10) + 1;
-    let y = Math.floor(Math.random() * 10) + 1;
-    while (searchAOA(allAttacks, [x, y])) {
-      x = Math.floor(Math.random() * 10) + 1;
-      y = Math.floor(Math.random() * 10) + 1;
-    }
-    receiveAttack(x, y);
+    const allEnemyAttacks = enemyHits.concat(missedEnemyAttacks);
+
+    const isLastHitASink = () => {
+      if (enemyHits.length > 0) {
+        if (sinks.length > 0) {
+          return arrayEquals(
+            enemyHits[enemyHits.length - 1],
+            sinks[sinks.length - 1]
+          );
+        }
+        return false;
+      }
+      return false;
+    };
+
+    const findNextAttack = () => {
+      let x = Math.floor(Math.random() * 10) + 1;
+      let y = Math.floor(Math.random() * 10) + 1;
+      // Sets random coordinates that haven't been played yet
+      while (searchAOA(allEnemyAttacks, [x, y])) {
+        x = Math.floor(Math.random() * 10) + 1;
+        y = Math.floor(Math.random() * 10) + 1;
+      }
+      if (enemyHits.length > 1 && !isLastHitASink()) {
+        const lastHit = enemyHits[enemyHits.length - 1];
+        const secondToLastHit = enemyHits[enemyHits.length - 2];
+        const difference =
+          lastHit[0] - secondToLastHit[0] + (lastHit[1] - secondToLastHit[1]);
+        // Start attacking around hit
+        // Continue chain of hits
+        if (difference === 1 || difference === -1) {
+          if (lastHit[0] !== secondToLastHit[0]) {
+            x = lastHit[1][0] - secondToLastHit[0][0] + lastHit[1][0];
+            y = lastHit[0][1];
+          }
+          if (lastHit[1] !== secondToLastHit[1]) {
+            y = lastHit[1] - secondToLastHit[1] + lastHit[1];
+            x = lastHit[0];
+          }
+        }
+      }
+      return [x, y];
+    };
+    receiveAttack(...findNextAttack());
+    console.log(isLastHitASink());
   };
+
   const checkForLoss = () => {
     const winStatus = document.getElementById('status');
     let sum = 0;
@@ -71,6 +116,7 @@ const gameboard = (playerName, isCPU) => {
     }
     return false;
   };
+
   return {
     checkForLoss,
     arrayEquals,
@@ -79,8 +125,9 @@ const gameboard = (playerName, isCPU) => {
     fleet,
     placeShip,
     receiveAttack,
-    attacks,
-    missedAttacks,
+    enemyHits,
+    missedEnemyAttacks,
+    sinks,
   };
 };
 

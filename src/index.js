@@ -54,7 +54,7 @@ function splitter(arr) {
 const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
 
 function renderCPUattacks() {
-  const misses = p1.missedAttacks;
+  const misses = p1.missedEnemyAttacks;
   const cells = document.querySelectorAll('.gridOne-table-cell');
   for (let i = 0; i < misses.length; i++) {
     for (let j = 0; j < cells.length; j++) {
@@ -142,9 +142,11 @@ function addGridListeners() {
 
 function clearPlayerData() {
   p1.fleet = [];
-  p1.missedAttacks = [];
+  p1.missedEnemyAttacks = [];
+  p1.enemyHits = [];
   CPU.fleet = [];
-  CPU.missedAttacks = [];
+  CPU.missedEnemyAttacks = [];
+  CPU.enemyHits = [];
 }
 
 drawGrids();
