@@ -72,7 +72,7 @@ function renderCPUattacks() {
             splitter(cells[m].attributes.value.value)
           )
         ) {
-          cells[m].style.background = 'rgba(255, 0, 0, 0.75)';
+          cells[m].style.background = 'rgba(255, 0, 0, 1)';
         }
       }
     }
@@ -84,7 +84,7 @@ function renderPlayerAttacks(cell) {
   for (let i = 0; i < CPU.fleet.length; i++) {
     for (let j = 0; j < Object.keys(CPU.fleet[i].positions).length; j++) {
       if (arrayEquals(CPU.fleet[i].positions[j], coords)) {
-        cell.style.background = 'rgba(38, 0, 255, 0.75)';
+        cell.style.background = 'rgba(38, 0, 255, 0.8)';
         hit = true;
       }
     }
@@ -105,7 +105,7 @@ function renderPlayerShips() {
             splitter(cells[k].attributes.value.value)
           )
         ) {
-          cells[k].style.background = 'rgba(38, 0, 255, 0.5)';
+          cells[k].style.background = 'rgba(38, 0, 255, 0.8)';
         }
       }
     }
@@ -134,7 +134,7 @@ function addGridListeners() {
           console.log(p1);
           gameboard.className -= ' inactive';
           renderCPUattacks();
-        }, 2000);
+        }, 1000);
       }
     });
   }
