@@ -5,6 +5,7 @@ const shipFactory = require('./shipFactory');
 const gameboard = (playerName, isCPU) => {
   let enemyHits = [];
   let missedEnemyAttacks = [];
+  let allEnemyAttacks = [];
   let sinks = [];
   let fleet = [];
 
@@ -17,7 +18,7 @@ const gameboard = (playerName, isCPU) => {
         newShip.positions.push([i, y1]);
       }
     } else {
-      const yValuesSorted = [y1, y2].sort();
+      const yValuesSorted = [y1, y2].sort((a, b) => a - b);
       for (let i = yValuesSorted[0]; i <= yValuesSorted[1]; i++) {
         newShip.positions.push([x1, i]);
       }
@@ -37,14 +38,17 @@ const gameboard = (playerName, isCPU) => {
             hitStatus.textContent = `${playerName}'s ${fleet[i].name} has been sunk!`;
             enemyHits.push([x, y]);
             sinks.push([x, y]);
+            allEnemyAttacks.push([x, y]);
             return 'sink';
           }
           enemyHits.push([x, y]);
+          allEnemyAttacks.push([x, y]);
           return 'hit';
         }
       }
     }
     missedEnemyAttacks.push([x, y]);
+    allEnemyAttacks.push([x, y]);
     return 'miss';
   };
 
@@ -57,8 +61,6 @@ const gameboard = (playerName, isCPU) => {
   };
 
   const receiveCpuAttack = () => {
-    const allEnemyAttacks = enemyHits.concat(missedEnemyAttacks);
-
     const isLastHitASink = () => {
       if (enemyHits.length > 0) {
         if (sinks.length > 0) {
@@ -72,6 +74,16 @@ const gameboard = (playerName, isCPU) => {
       return false;
     };
 
+    const isLastMoveAHit = () => {
+      if (enemyHits.length > 0) {
+        return arrayEquals(
+          enemyHits[enemyHits.length - 1],
+          allEnemyAttacks[allEnemyAttacks.length - 1]
+        );
+      }
+      return false;
+    };
+
     const findNextAttack = () => {
       let x = Math.floor(Math.random() * 10) + 1;
       let y = Math.floor(Math.random() * 10) + 1;
@@ -80,28 +92,63 @@ const gameboard = (playerName, isCPU) => {
         x = Math.floor(Math.random() * 10) + 1;
         y = Math.floor(Math.random() * 10) + 1;
       }
-      if (enemyHits.length > 1 && !isLastHitASink()) {
+      // If last two shots were hits, continue attacking
+      if (enemyHits.length > 0) {
         const lastHit = enemyHits[enemyHits.length - 1];
-        const secondToLastHit = enemyHits[enemyHits.length - 2];
-        const difference =
-          lastHit[0] - secondToLastHit[0] + (lastHit[1] - secondToLastHit[1]);
-        // Start attacking around hit
-        // Continue chain of hits
-        if (difference === 1 || difference === -1) {
-          if (lastHit[0] !== secondToLastHit[0]) {
-            x = lastHit[1][0] - secondToLastHit[0][0] + lastHit[1][0];
-            y = lastHit[0][1];
-          }
-          if (lastHit[1] !== secondToLastHit[1]) {
-            y = lastHit[1] - secondToLastHit[1] + lastHit[1];
+        // If last shot was a hit but not sink, guess until it's a sink
+        if (!isLastHitASink()) {
+          console.log('Second attack');
+          // Start attacking around hit
+          if (
+            lastHit[0] + 1 < 11 &&
+            !searchAOA(allEnemyAttacks, [lastHit[0] + 1, lastHit[1]])
+          ) {
+            x = lastHit[0] + 1;
+            y = lastHit[1];
+          } else if (
+            lastHit[0] + -1 > 0 &&
+            !searchAOA(allEnemyAttacks, [lastHit[0] + -1, lastHit[1]])
+          ) {
+            x = lastHit[0] + -1;
+            y = lastHit[1];
+          } else if (
+            lastHit[1] + 1 < 11 &&
+            !searchAOA(allEnemyAttacks, [lastHit[0], lastHit[1] + 1])
+          ) {
             x = lastHit[0];
+            y = lastHit[1] + 1;
+          } else if (
+            lastHit[1] + -1 > 0 &&
+            !searchAOA(allEnemyAttacks, [lastHit[0], lastHit[1] + -1])
+          ) {
+            x = lastHit[0];
+            y = lastHit[1] + -1;
+          }
+        }
+        if (enemyHits.length > 1 && !isLastHitASink()) {
+          const secondToLastHit = enemyHits[enemyHits.length - 2];
+          const difference =
+            lastHit[0] - secondToLastHit[0] + (lastHit[1] - secondToLastHit[1]);
+
+          if (!isLastHitASink() && (difference === 1 || difference === -1)) {
+            console.log('Continuing chain');
+            // Continue chain of hits
+            if (difference === 1 || difference === -1) {
+              if (lastHit[0] !== secondToLastHit[0]) {
+                x = lastHit[0] - secondToLastHit[0] + lastHit[0];
+                y = lastHit[1];
+              }
+              if (lastHit[1] !== secondToLastHit[1]) {
+                y = lastHit[1] - secondToLastHit[1] + lastHit[1];
+                x = lastHit[0];
+              }
+            }
           }
         }
       }
       return [x, y];
     };
     receiveAttack(...findNextAttack());
-    console.log(isLastHitASink());
   };
 
   const checkForLoss = () => {
@@ -128,6 +175,7 @@ const gameboard = (playerName, isCPU) => {
     enemyHits,
     missedEnemyAttacks,
     sinks,
+    allEnemyAttacks,
   };
 };
 
