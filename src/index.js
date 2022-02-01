@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable wrap-iife */
-const { p1, CPU } = require('./battleship');
+const { p1, CPU, randomizeShips } = require('./battleship');
 
 function drawGrids() {
   const alphabet = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -151,7 +151,11 @@ function clearPlayerData() {
 
 drawGrids();
 addGridListeners();
+randomizeShips(p1);
+randomizeShips(CPU);
 renderPlayerShips();
+console.log(p1);
+console.log(CPU);
 
 const button = document.getElementById('new-game-button');
 button.addEventListener('click', () => {

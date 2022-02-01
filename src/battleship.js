@@ -3,27 +3,83 @@ const gameboard = require('./gameboard');
 const p1 = gameboard('Player', false);
 const CPU = gameboard('Computer', true);
 
-p1.placeShip(1, 'boat', 4, 1, 4, 1);
-p1.placeShip(1, 'boat', 4, 6, 4, 6);
-p1.placeShip(1, 'boat', 6, 7, 6, 7);
-p1.placeShip(1, 'boat', 2, 10, 2, 10);
-p1.placeShip(2, 'schooner', 2, 1, 2, 2);
-p1.placeShip(2, 'schooner', 7, 3, 8, 3);
-p1.placeShip(2, 'schooner', 4, 9, 5, 9);
-p1.placeShip(3, 'frigate', 2, 5, 2, 7);
-p1.placeShip(3, 'frigate', 8, 5, 8, 7);
-p1.placeShip(4, 'cruiser', 10, 7, 10, 10);
+const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
 
-CPU.placeShip(1, 'boat', 4, 1, 4, 1);
-CPU.placeShip(1, 'boat', 4, 6, 4, 6);
-CPU.placeShip(1, 'boat', 6, 7, 6, 7);
-CPU.placeShip(1, 'boat', 2, 10, 2, 10);
-CPU.placeShip(2, 'schooner', 2, 3, 3, 3);
-CPU.placeShip(2, 'schooner', 7, 3, 8, 3);
-CPU.placeShip(2, 'schooner', 4, 9, 5, 9);
-CPU.placeShip(3, 'frigate', 2, 5, 2, 7);
-CPU.placeShip(3, 'frigate', 8, 5, 10, 5);
-CPU.placeShip(4, 'cruiser', 7, 10, 10, 10);
+const searchAOA = (arr, coords) => {
+  // Function to search an array of arrays
+  for (let i = 0; i < arr.length; i++) {
+    if (arrayEquals(arr[i], coords)) return true;
+  }
+  return false;
+};
+
+const checkForShips = (arr, x, y, d, shipLength) => {
+  if (d === 'x') {
+    for (let i = 0; i < shipLength; i++) {
+      if (searchAOA(arr, [i + x, y])) return true;
+    }
+    return false;
+  }
+  if (d === 'y') {
+    for (let j = 0; j < shipLength; j++) {
+      if (searchAOA(arr, [x, j + y])) return true;
+    }
+    return false;
+  }
+};
+
+const randomizeShips = (player) => {
+  const ships = [
+    [5, 'carrier'],
+    [4, 'battleship'],
+    [3, 'destroyer'],
+    [3, 'destroyer'],
+    [2, 'submarine'],
+    [2, 'submarine'],
+    [1, 'boat'],
+    [1, 'boat'],
+  ];
+  const positions = [];
+
+  const setRandomCoords = (shipLength) => {
+    const randomInt = Math.round(Math.random());
+    // Place a horizontal ship
+    if (randomInt === 0) {
+      let x1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      const y1 = Math.floor(Math.random() * 10) + 1;
+      while (checkForShips(positions, x1, y1, 'x', shipLength)) {
+        x1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      }
+      const x2 = x1 + shipLength;
+      const xValuesSorted = [x1, x2].sort((a, b) => a - b);
+      for (let j = xValuesSorted[0]; j <= xValuesSorted[1]; j++) {
+        positions.push([j, y1]);
+      }
+      return [x1, y1, x2, y1];
+    }
+    // Place a vertical ship
+    if (randomInt === 1) {
+      const x1 = Math.floor(Math.random() * 10) + 1;
+      let y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      while (checkForShips(positions, x1, y1, 'y', shipLength)) {
+        y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      }
+      const y2 = y1 + shipLength;
+      const yValuesSorted = [y1, y2].sort((a, b) => a - b);
+      for (let k = yValuesSorted[0]; k <= yValuesSorted[1]; k++) {
+        positions.push([x1, k]);
+      }
+      return [x1, y1, x1, y2];
+    }
+  };
+
+  for (let i = 0; i < ships.length; i++) {
+    const shipLength = ships[i][0] - 1;
+    player.placeShip(...ships[i], ...setRandomCoords(shipLength));
+    console.log(p1.fleet);
+  }
+};
 
 exports.p1 = p1;
 exports.CPU = CPU;
+exports.randomizeShips = randomizeShips;
