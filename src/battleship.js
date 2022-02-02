@@ -46,9 +46,10 @@ const randomizeShips = (player) => {
       if (x1 < 1) {
         x1 += shipLength;
       }
-      const y1 = Math.floor(Math.random() * 10) + 1;
+      let y1 = Math.floor(Math.random() * 10) + 1;
       while (checkForShips(positions, x1, y1, 'x', shipLength)) {
         x1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+        y1 = Math.floor(Math.random() * 10) + 1;
         if (x1 < 1) {
           x1 += shipLength;
         }
@@ -62,13 +63,14 @@ const randomizeShips = (player) => {
     }
     if (randomInt === 1) {
       // Place a vertical ship
-      const x1 = Math.floor(Math.random() * 10) + 1;
+      let x1 = Math.floor(Math.random() * 10) + 1;
       let y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
       if (y1 < 1) {
         y1 += shipLength;
       }
       while (checkForShips(positions, x1, y1, 'y', shipLength)) {
         y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+        x1 = Math.floor(Math.random() * 10) + 1;
         if (y1 < 1) {
           y1 += shipLength;
         }

@@ -82,13 +82,12 @@ const gameboard = (playerName, isCPU) => {
         x = Math.floor(Math.random() * 10) + 1;
         y = Math.floor(Math.random() * 10) + 1;
       }
-      // If last two shots were hits, continue attacking
       if (enemyHits.length > 0) {
         const lastHit = enemyHits[enemyHits.length - 1];
         // If last shot was a hit but not sink, guess until it's a sink
         if (!isLastHitASink()) {
           console.log('Second attack');
-          // Start attacking around hit
+          // Start attacking around hit to find the direction of the ship
           if (
             lastHit[0] + 1 < 11 &&
             !searchAOA(allEnemyAttacks, [lastHit[0] + 1, lastHit[1]])
@@ -122,7 +121,7 @@ const gameboard = (playerName, isCPU) => {
 
           if (!isLastHitASink() && (difference === 1 || difference === -1)) {
             console.log('Continuing chain');
-            // Continue chain of hits
+            // Continue chain of hits after two successful hits
             if (difference === 1 || difference === -1) {
               if (lastHit[0] !== secondToLastHit[0]) {
                 x = lastHit[0] - secondToLastHit[0] + lastHit[0];
@@ -132,6 +131,11 @@ const gameboard = (playerName, isCPU) => {
                 y = lastHit[1] - secondToLastHit[1] + lastHit[1];
                 x = lastHit[0];
               }
+            }
+            // Defaults to a random attack if chain of attacks doesn't sink a ship
+            if (searchAOA(allEnemyAttacks, [x, y])) {
+              x = Math.floor(Math.random() * 10) + 1;
+              y = Math.floor(Math.random() * 10) + 1;
             }
           }
         }

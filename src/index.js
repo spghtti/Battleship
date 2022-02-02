@@ -115,6 +115,13 @@ function renderPlayerShips() {
 function addGridListeners() {
   const cells = document.querySelectorAll('.gridTwo-table-cell');
   const gameboard = document.getElementById('gameboards');
+  const grid = document.getElementById('grid-two');
+  const randomizeButton = document.getElementById('randomize-button');
+
+  grid.addEventListener('click', () => {
+    randomizeButton.className += ' inactive-button';
+  });
+
   for (let i = 0; i < cells.length; i++) {
     const x = splitter(cells[i].attributes.value.value)[0];
     const y = splitter(cells[i].attributes.value.value)[1];
@@ -153,19 +160,45 @@ function clearPlayerData() {
   CPU.fleet.length = 0;
 }
 
+(function addButtonListeners() {
+  const randomizeButton = document.getElementById('randomize-button');
+  const newGameButton = document.getElementById('new-game-button');
+
+  randomizeButton.addEventListener('click', () => {
+    drawGrids();
+    addGridListeners();
+    clearPlayerData();
+    randomizeShips(p1);
+    randomizeShips(CPU);
+    renderPlayerShips();
+  });
+
+  newGameButton.addEventListener('click', () => {
+    randomizeButton.className -= ' inactive-button';
+    drawGrids();
+    addGridListeners();
+    clearPlayerData();
+    randomizeShips(p1);
+    randomizeShips(CPU);
+    renderPlayerShips();
+  });
+})();
+
+function addShipPlacementListeners() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].addEventListener('click', () => {});
+  }
+}
+
+function initializeGame() {
+  const status = document.getElementById('status');
+  drawGrids();
+  addGridListeners();
+}
+
 drawGrids();
 addGridListeners();
 randomizeShips(p1);
 randomizeShips(CPU);
 renderPlayerShips();
-
-const button = document.getElementById('new-game-button');
-button.addEventListener('click', () => {
-  // Needs to restore player ships
-  drawGrids();
-  addGridListeners();
-  clearPlayerData();
-  randomizeShips(p1);
-  randomizeShips(CPU);
-  renderPlayerShips();
-});
