@@ -141,12 +141,16 @@ function addGridListeners() {
 }
 
 function clearPlayerData() {
-  p1.fleet = [];
-  p1.missedEnemyAttacks = [];
-  p1.enemyHits = [];
-  CPU.fleet = [];
-  CPU.missedEnemyAttacks = [];
-  CPU.enemyHits = [];
+  p1.enemyHits.length = 0;
+  p1.missedEnemyAttacks.length = 0;
+  p1.allEnemyAttacks.length = 0;
+  p1.sinks.length = 0;
+  p1.fleet.length = 0;
+  CPU.enemyHits.length = 0;
+  CPU.missedEnemyAttacks.length = 0;
+  CPU.allEnemyAttacks.length = 0;
+  CPU.sinks.length = 0;
+  CPU.fleet.length = 0;
 }
 
 drawGrids();
@@ -154,8 +158,6 @@ addGridListeners();
 randomizeShips(p1);
 randomizeShips(CPU);
 renderPlayerShips();
-console.log(p1);
-console.log(CPU);
 
 const button = document.getElementById('new-game-button');
 button.addEventListener('click', () => {
@@ -163,4 +165,7 @@ button.addEventListener('click', () => {
   drawGrids();
   addGridListeners();
   clearPlayerData();
+  randomizeShips(p1);
+  randomizeShips(CPU);
+  renderPlayerShips();
 });

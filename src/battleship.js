@@ -33,10 +33,7 @@ const randomizeShips = (player) => {
     [5, 'carrier'],
     [4, 'battleship'],
     [3, 'destroyer'],
-    [3, 'destroyer'],
     [2, 'submarine'],
-    [2, 'submarine'],
-    [1, 'boat'],
     [1, 'boat'],
   ];
   const positions = [];
@@ -46,9 +43,15 @@ const randomizeShips = (player) => {
     // Place a horizontal ship
     if (randomInt === 0) {
       let x1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      if (x1 < 1) {
+        x1 += shipLength;
+      }
       const y1 = Math.floor(Math.random() * 10) + 1;
       while (checkForShips(positions, x1, y1, 'x', shipLength)) {
         x1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+        if (x1 < 1) {
+          x1 += shipLength;
+        }
       }
       const x2 = x1 + shipLength;
       const xValuesSorted = [x1, x2].sort((a, b) => a - b);
@@ -57,12 +60,18 @@ const randomizeShips = (player) => {
       }
       return [x1, y1, x2, y1];
     }
-    // Place a vertical ship
     if (randomInt === 1) {
+      // Place a vertical ship
       const x1 = Math.floor(Math.random() * 10) + 1;
       let y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+      if (y1 < 1) {
+        y1 += shipLength;
+      }
       while (checkForShips(positions, x1, y1, 'y', shipLength)) {
         y1 = Math.floor(Math.random() * 10) + 1 - shipLength;
+        if (y1 < 1) {
+          y1 += shipLength;
+        }
       }
       const y2 = y1 + shipLength;
       const yValuesSorted = [y1, y2].sort((a, b) => a - b);

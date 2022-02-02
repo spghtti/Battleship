@@ -74,16 +74,6 @@ const gameboard = (playerName, isCPU) => {
       return false;
     };
 
-    const isLastMoveAHit = () => {
-      if (enemyHits.length > 0) {
-        return arrayEquals(
-          enemyHits[enemyHits.length - 1],
-          allEnemyAttacks[allEnemyAttacks.length - 1]
-        );
-      }
-      return false;
-    };
-
     const findNextAttack = () => {
       let x = Math.floor(Math.random() * 10) + 1;
       let y = Math.floor(Math.random() * 10) + 1;

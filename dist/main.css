@@ -2,7 +2,7 @@ body {
   color: white;
   background: linear-gradient(90deg, #000000, #070026, #0b003a, #04004b);
   background-size: 400% 400%;
-  animation: gradient 35s ease infinite;
+  animation: gradient 30s ease infinite;
   height: 100vh;
   overflow-x: hidden;
 }
