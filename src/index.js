@@ -36,6 +36,7 @@ function drawGrids() {
       const cell2 = document.createElement('td');
       cell.setAttribute('value', `${x + 1}, ${y + 1}`);
       cell2.setAttribute('value', `${x + 1}, ${y + 1}`);
+      cell.dataset.index = y * 10 + x + 1;
       row.appendChild(cell).className = 'gridOne-table-cell';
       row2.appendChild(cell2).className = 'gridTwo-table-cell';
     }
@@ -163,6 +164,7 @@ function clearPlayerData() {
 (function addButtonListeners() {
   const randomizeButton = document.getElementById('randomize-button');
   const newGameButton = document.getElementById('new-game-button');
+  const rotateButton = document.getElementById('rotate-button');
 
   randomizeButton.addEventListener('click', () => {
     drawGrids();
@@ -182,12 +184,47 @@ function clearPlayerData() {
     randomizeShips(CPU);
     renderPlayerShips();
   });
+  rotateButton.addEventListener('click', () => {
+    addShipPlacementListeners(3, false);
+  });
 })();
 
-function addShipPlacementListeners() {
+function showShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
+  const index = Number(this.dataset.index);
+  cells[index + 3].style.background = 'rgb(109, 109, 109)';
+  this.style.background = 'rgb(109, 109, 109)';
+}
+
+function hideShipPlacement() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  const index = Number(this.dataset.index);
+  cells[index + 3].style.background = '';
+  this.style.background = '';
+}
+
+function addShipPlacementListeners(shipLength, isHorizontal) {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  const length = shipLength - 1;
   for (let i = 0; i < cells.length; i++) {
-    cells[i].addEventListener('click', () => {});
+    if (isHorizontal) {
+      if (i + length < 100) {
+        if ((i % 10) + length < 10) {
+          cells[i].addEventListener('mouseenter', showShipPlacement);
+          cells[i].addEventListener('mouseleave', hideShipPlacement);
+        }
+      }
+    } else {
+      const vertLength = length * 10;
+      if (i + vertLength < 100) {
+        cells[i].addEventListener('mouseenter', () => {
+          cells[i + vertLength].style.background = 'rgb(109, 109, 109)';
+        });
+        cells[i].addEventListener('mouseleave', () => {
+          cells[i + vertLength].style.background = '';
+        });
+      }
+    }
   }
 }
 
@@ -195,10 +232,8 @@ function initializeGame() {
   const status = document.getElementById('status');
   drawGrids();
   addGridListeners();
+  addShipPlacementListeners(3, true);
+  renderPlayerShips();
 }
 
-drawGrids();
-addGridListeners();
-randomizeShips(p1);
-randomizeShips(CPU);
-renderPlayerShips();
+initializeGame();

@@ -28,14 +28,17 @@ th {
 }
 .gridTwo-table-cell {
   cursor: pointer;
-  border: 1px solid rgba(255, 0, 0, 0.8);
+  height: 32px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 3px solid rgba(255, 0, 0, 0.8);
 }
 .gridTwo-table-cell:hover {
   background-color: rgba(38, 0, 255, 0.75);
   transition: 0.15s ease-in;
 }
 .gridOne-table-cell {
-  border: 1px solid rgb(38, 0, 255);
+  border: 3px solid rgb(38, 0, 255);
+  background-color: rgba(38, 0, 255, 0.1);
   transition: 0.15s ease-in;
 }
 .grid {
@@ -46,6 +49,7 @@ th {
   font-family: 'Roboto Mono', monospace;
   font-size: 3em;
   text-shadow: 2px 3px 2px rgba(255, 0, 0, 1);
+  margin-top: 20px;
 }
 table,
 div,
@@ -117,8 +121,7 @@ button {
   justify-content: center;
   gap: 20px;
 }
-#new-game-button,
-#randomize-button {
+#new-game-container > button {
   width: 200px;
   height: 50px;
   border: 5px solid #d6d6d6;
