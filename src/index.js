@@ -54,6 +54,14 @@ function splitter(arr) {
 
 const arrayEquals = (a, b) => a.every((val, index) => val === b[index]);
 
+const searchAOA = (arr, coords) => {
+  // Function to search an array of arrays
+  for (let i = 0; i < arr.length; i++) {
+    if (arrayEquals(arr[i], coords)) return true;
+  }
+  return false;
+};
+
 function renderCPUattacks() {
   const misses = p1.missedEnemyAttacks;
   const cells = document.querySelectorAll('.gridOne-table-cell');
@@ -106,7 +114,7 @@ function renderPlayerShips() {
             splitter(cells[k].attributes.value.value)
           )
         ) {
-          cells[k].style.background = 'rgba(38, 0, 255, 0.8)';
+          cells[k].style.background = 'rgba(38, 0, 255, 0.9)';
         }
       }
     }
@@ -161,7 +169,13 @@ function clearPlayerData() {
   CPU.fleet.length = 0;
 }
 
-const ships = [4, 3, 2, 1, 0];
+const ships = [
+  [4, 'carrier'],
+  [3, 'battleship'],
+  [2, 'destroyer'],
+  [1, 'submarine'],
+  [0, 'boat'],
+];
 let isHorizontal = true;
 
 function removeListeners() {
@@ -195,56 +209,126 @@ function removeListeners() {
 
   newGameButton.addEventListener('click', () => {
     randomizeButton.className -= ' inactive-button';
-    drawGrids();
-    addGridListeners();
-    clearPlayerData();
-    randomizeShips(p1);
-    randomizeShips(CPU);
-    renderPlayerShips();
+    initializeGame();
   });
   rotateButton.addEventListener('click', () => {
     removeListeners();
     isHorizontal = !isHorizontal;
   });
   rotateButton.addEventListener('click', () => {
-    addShipPlacementListeners(ships[0], isHorizontal);
+    addShipPlacementListeners(ships[0][0], isHorizontal);
   });
 })();
 
 function showHorizontalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  for (let i = 0; i <= ships[0]; i++) {
-    cells[index + i].style.background = 'rgb(109, 109, 109)';
+  const allPositions = [];
+  for (let i = 0; i < p1.fleet.length; i++) {
+    for (let j = 0; j < p1.fleet[i].positions.length; j++) {
+      allPositions.push(p1.fleet[i].positions[j]);
+    }
+  }
+  for (let i = 0; i <= ships[0][0]; i++) {
+    if (
+      !searchAOA(
+        allPositions,
+        splitter(cells[index + i].attributes.value.value)
+      )
+    ) {
+      cells[index + i].style.background = 'rgb(109, 109, 109)';
+    }
   }
 }
 
 function hideHorizontalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  for (let i = 0; i <= ships[0]; i++) {
-    cells[index + i].style.background = '';
+  const allPositions = [];
+  for (let i = 0; i < p1.fleet.length; i++) {
+    for (let j = 0; j < p1.fleet[i].positions.length; j++) {
+      allPositions.push(p1.fleet[i].positions[j]);
+    }
+  }
+  for (let i = 0; i <= ships[0][0]; i++) {
+    if (
+      !searchAOA(
+        allPositions,
+        splitter(cells[index + i].attributes.value.value)
+      )
+    ) {
+      cells[index + i].style.background = '';
+    }
   }
 }
 
 function showVerticalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  for (let i = 0; i <= ships[0]; i++) {
-    cells[index + i * 10].style.background = 'rgb(109, 109, 109)';
+  const allPositions = [];
+  for (let i = 0; i < p1.fleet.length; i++) {
+    for (let j = 0; j < p1.fleet[i].positions.length; j++) {
+      allPositions.push(p1.fleet[i].positions[j]);
+    }
+  }
+  for (let i = 0; i <= ships[0][0]; i++) {
+    if (
+      !searchAOA(
+        allPositions,
+        splitter(cells[index + i * 10].attributes.value.value)
+      )
+    ) {
+      cells[index + i * 10].style.background = 'rgb(109, 109, 109)';
+    }
   }
 }
 
 function hideVerticalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  for (let i = 0; i <= ships[0]; i++) {
-    cells[index + i * 10].style.background = '';
+  const allPositions = [];
+  for (let i = 0; i < p1.fleet.length; i++) {
+    for (let j = 0; j < p1.fleet[i].positions.length; j++) {
+      allPositions.push(p1.fleet[i].positions[j]);
+    }
+  }
+  for (let i = 0; i <= ships[0][0]; i++) {
+    if (
+      !searchAOA(
+        allPositions,
+        splitter(cells[index + i * 10].attributes.value.value)
+      )
+    ) {
+      cells[index + i * 10].style.background = '';
+    }
   }
 }
 
 function nextShip() {
   ships.shift();
+}
+
+function placeShipOnClick() {
+  const coords = splitter(this.attributes.value.value);
+  if (isHorizontal) {
+    p1.placeShip(
+      ships[0][0] + 1,
+      ships[0][1],
+      coords[0],
+      coords[1],
+      coords[0] + ships[0][0],
+      coords[1]
+    );
+  } else {
+    p1.placeShip(
+      ships[0][0] + 1,
+      ships[0][1],
+      coords[0],
+      coords[1],
+      coords[0],
+      coords[1] + ships[0][0]
+    );
+  }
 }
 
 function addShipPlacementListeners(shipLength, isHorizontal) {
@@ -254,17 +338,27 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
     if (isHorizontal) {
       if (i + length < 100) {
         if ((i % 10) + length < 10) {
+          cells[i].addEventListener('click', placeShipOnClick);
+          cells[i].addEventListener('click', nextShip);
+          cells[i].addEventListener('click', renderPlayerShips);
+          cells[i].addEventListener('click', () => {
+            console.log(p1.fleet);
+          });
           cells[i].addEventListener('mouseenter', showHorizontalShipPlacement);
           cells[i].addEventListener('mouseleave', hideHorizontalShipPlacement);
-          cells[i].addEventListener('click', nextShip);
         }
       }
     } else {
       const vertLength = length * 10;
       if (i + vertLength < 100) {
+        cells[i].addEventListener('click', placeShipOnClick);
+        cells[i].addEventListener('click', nextShip);
+        cells[i].addEventListener('click', renderPlayerShips);
+        cells[i].addEventListener('click', () => {
+          console.log(p1.fleet);
+        });
         cells[i].addEventListener('mouseenter', showVerticalShipPlacement);
         cells[i].addEventListener('mouseleave', hideVerticalShipPlacement);
-        cells[i].addEventListener('click', nextShip);
       }
     }
   }
@@ -274,8 +368,9 @@ function initializeGame() {
   const status = document.getElementById('status');
   status.textContent = 'Place your ships';
   drawGrids();
+  clearPlayerData();
   addGridListeners();
-  addShipPlacementListeners(ships[0], isHorizontal);
+  addShipPlacementListeners(ships[0][0], isHorizontal);
   renderPlayerShips();
 }
 
