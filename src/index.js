@@ -36,7 +36,7 @@ function drawGrids() {
       const cell2 = document.createElement('td');
       cell.setAttribute('value', `${x + 1}, ${y + 1}`);
       cell2.setAttribute('value', `${x + 1}, ${y + 1}`);
-      cell.dataset.index = y * 10 + x + 1;
+      cell.dataset.index = y * 10 + x + 1 - 1;
       row.appendChild(cell).className = 'gridOne-table-cell';
       row2.appendChild(cell2).className = 'gridTwo-table-cell';
     }
@@ -161,6 +161,24 @@ function clearPlayerData() {
   CPU.fleet.length = 0;
 }
 
+const ships = [4, 3, 2, 1, 0];
+let isHorizontal = true;
+
+function removeListeners() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  if (isHorizontal) {
+    cells.forEach((cell) => {
+      cell.removeEventListener('mouseenter', showHorizontalShipPlacement);
+      cell.removeEventListener('mouseleave', hideHorizontalShipPlacement);
+    });
+  } else {
+    cells.forEach((cell) => {
+      cell.removeEventListener('mouseenter', showVerticalShipPlacement);
+      cell.removeEventListener('mouseleave', hideVerticalShipPlacement);
+    });
+  }
+}
+
 (function addButtonListeners() {
   const randomizeButton = document.getElementById('randomize-button');
   const newGameButton = document.getElementById('new-game-button');
@@ -185,44 +203,68 @@ function clearPlayerData() {
     renderPlayerShips();
   });
   rotateButton.addEventListener('click', () => {
-    addShipPlacementListeners(3, false);
+    removeListeners();
+    isHorizontal = !isHorizontal;
+  });
+  rotateButton.addEventListener('click', () => {
+    addShipPlacementListeners(ships[0], isHorizontal);
   });
 })();
 
-function showShipPlacement() {
+function showHorizontalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  cells[index + 3].style.background = 'rgb(109, 109, 109)';
-  this.style.background = 'rgb(109, 109, 109)';
+  for (let i = 0; i <= ships[0]; i++) {
+    cells[index + i].style.background = 'rgb(109, 109, 109)';
+  }
 }
 
-function hideShipPlacement() {
+function hideHorizontalShipPlacement() {
   const cells = document.querySelectorAll('.gridOne-table-cell');
   const index = Number(this.dataset.index);
-  cells[index + 3].style.background = '';
-  this.style.background = '';
+  for (let i = 0; i <= ships[0]; i++) {
+    cells[index + i].style.background = '';
+  }
+}
+
+function showVerticalShipPlacement() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  const index = Number(this.dataset.index);
+  for (let i = 0; i <= ships[0]; i++) {
+    cells[index + i * 10].style.background = 'rgb(109, 109, 109)';
+  }
+}
+
+function hideVerticalShipPlacement() {
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  const index = Number(this.dataset.index);
+  for (let i = 0; i <= ships[0]; i++) {
+    cells[index + i * 10].style.background = '';
+  }
+}
+
+function nextShip() {
+  ships.shift();
 }
 
 function addShipPlacementListeners(shipLength, isHorizontal) {
   const cells = document.querySelectorAll('.gridOne-table-cell');
-  const length = shipLength - 1;
+  const length = shipLength;
   for (let i = 0; i < cells.length; i++) {
     if (isHorizontal) {
       if (i + length < 100) {
         if ((i % 10) + length < 10) {
-          cells[i].addEventListener('mouseenter', showShipPlacement);
-          cells[i].addEventListener('mouseleave', hideShipPlacement);
+          cells[i].addEventListener('mouseenter', showHorizontalShipPlacement);
+          cells[i].addEventListener('mouseleave', hideHorizontalShipPlacement);
+          cells[i].addEventListener('click', nextShip);
         }
       }
     } else {
       const vertLength = length * 10;
       if (i + vertLength < 100) {
-        cells[i].addEventListener('mouseenter', () => {
-          cells[i + vertLength].style.background = 'rgb(109, 109, 109)';
-        });
-        cells[i].addEventListener('mouseleave', () => {
-          cells[i + vertLength].style.background = '';
-        });
+        cells[i].addEventListener('mouseenter', showVerticalShipPlacement);
+        cells[i].addEventListener('mouseleave', hideVerticalShipPlacement);
+        cells[i].addEventListener('click', nextShip);
       }
     }
   }
@@ -230,9 +272,10 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
 
 function initializeGame() {
   const status = document.getElementById('status');
+  status.textContent = 'Place your ships';
   drawGrids();
   addGridListeners();
-  addShipPlacementListeners(3, true);
+  addShipPlacementListeners(ships[0], isHorizontal);
   renderPlayerShips();
 }
 
