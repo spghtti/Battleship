@@ -310,24 +310,60 @@ function nextShip() {
 
 function placeShipOnClick() {
   const coords = splitter(this.attributes.value.value);
+  const cells = document.querySelectorAll('.gridOne-table-cell');
+  const position = Number(this.dataset.index);
+  const shipLength = ships[0][0];
+  const shipName = ships[0][1];
+
+  function checkForOccupation() {
+    if (isHorizontal) {
+      for (let i = 0; i <= shipLength; i++) {
+        if (cells[i + position].dataset.occupied === 'true') {
+          return true;
+        }
+      }
+      return false;
+    }
+    for (let i = 0; i <= shipLength; i++) {
+      if (cells[position + i * 10].dataset.occupied === 'true') {
+        return true;
+      }
+    }
+    return false;
+  }
+
   if (isHorizontal) {
-    p1.placeShip(
-      ships[0][0] + 1,
-      ships[0][1],
-      coords[0],
-      coords[1],
-      coords[0] + ships[0][0],
-      coords[1]
-    );
+    if (!checkForOccupation()) {
+      p1.placeShip(
+        shipLength + 1,
+        shipName,
+        coords[0],
+        coords[1],
+        coords[0] + shipLength,
+        coords[1]
+      );
+      for (let i = 0; i <= shipLength; i++) {
+        cells[i + position].dataset.occupied = 'true';
+      }
+      nextShip();
+      removeListeners();
+      addShipPlacementListeners(ships[0][0], isHorizontal);
+    }
   } else {
     p1.placeShip(
-      ships[0][0] + 1,
-      ships[0][1],
+      shipLength + 1,
+      shipName,
       coords[0],
       coords[1],
       coords[0],
-      coords[1] + ships[0][0]
+      coords[1] + shipLength
     );
+    for (let i = 0; i <= shipLength; i++) {
+      cells[position + i * 10].dataset.occupied = 'true';
+    }
+    nextShip();
+    removeListeners();
+    addShipPlacementListeners(ships[0][0], isHorizontal);
   }
 }
 
@@ -339,7 +375,6 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
       if (i + length < 100) {
         if ((i % 10) + length < 10) {
           cells[i].addEventListener('click', placeShipOnClick);
-          cells[i].addEventListener('click', nextShip);
           cells[i].addEventListener('click', renderPlayerShips);
           cells[i].addEventListener('click', () => {
             console.log(p1.fleet);
@@ -352,7 +387,6 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
       const vertLength = length * 10;
       if (i + vertLength < 100) {
         cells[i].addEventListener('click', placeShipOnClick);
-        cells[i].addEventListener('click', nextShip);
         cells[i].addEventListener('click', renderPlayerShips);
         cells[i].addEventListener('click', () => {
           console.log(p1.fleet);
