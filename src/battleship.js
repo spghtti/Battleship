@@ -91,6 +91,17 @@ const randomizeShips = (player) => {
   }
 };
 
+const startGame = () => {
+  const playerGameboard = document.getElementById('grid-one');
+  const computerGameboard = document.getElementById('grid-two');
+  const rotateButton = document.getElementById('rotate-button');
+  playerGameboard.style.pointerEvents = 'none';
+  computerGameboard.style.pointerEvents = 'auto';
+  rotateButton.style.pointerEvents = 'none';
+  rotateButton.className += ' inactive-button';
+};
+
 exports.p1 = p1;
 exports.CPU = CPU;
 exports.randomizeShips = randomizeShips;
+exports.startGame = startGame;

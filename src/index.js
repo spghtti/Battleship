@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable wrap-iife */
-const { p1, CPU, randomizeShips } = require('./battleship');
+const { p1, CPU, randomizeShips, startGame } = require('./battleship');
 
 function drawGrids() {
   const alphabet = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -135,7 +135,9 @@ function addGridListeners() {
     const x = splitter(cells[i].attributes.value.value)[0];
     const y = splitter(cells[i].attributes.value.value)[1];
     cells[i].addEventListener('click', function () {
+      const status = document.getElementById('status');
       if (!p1.checkForLoss() && !CPU.checkForLoss()) {
+        status.textContent = '';
         renderPlayerAttacks(this);
         CPU.receiveAttack(x, y);
         console.log(CPU);
@@ -169,7 +171,7 @@ function clearPlayerData() {
   CPU.fleet.length = 0;
 }
 
-const ships = [
+let ships = [
   [4, 'carrier'],
   [3, 'battleship'],
   [2, 'destroyer'],
@@ -305,7 +307,13 @@ function hideVerticalShipPlacement() {
 }
 
 function nextShip() {
-  ships.shift();
+  const status = document.getElementById('status');
+  if (ships.length === 1) {
+    status.textContent = 'Start!';
+    startGame();
+  } else {
+    ships.shift();
+  }
 }
 
 function placeShipOnClick() {
@@ -400,12 +408,26 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
 
 function initializeGame() {
   const status = document.getElementById('status');
+  const computerGameboard = document.getElementById('grid-two');
+  const playerGameboard = document.getElementById('grid-one');
   status.textContent = 'Place your ships';
+  computerGameboard.style.pointerEvents = 'none';
+  playerGameboard.style.pointerEvents = 'auto';
+  const rotateButton = document.getElementById('rotate-button');
+  rotateButton.className -= 'inactive-button';
+  ships = [
+    [4, 'carrier'],
+    [3, 'battleship'],
+    [2, 'destroyer'],
+    [1, 'submarine'],
+    [0, 'boat'],
+  ];
   drawGrids();
   clearPlayerData();
   addGridListeners();
   addShipPlacementListeners(ships[0][0], isHorizontal);
-  renderPlayerShips();
+  randomizeShips(CPU);
+  console.log(CPU);
 }
 
 initializeGame();

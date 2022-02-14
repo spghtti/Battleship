@@ -35,11 +35,15 @@ th {
 .gridTwo-table-cell:hover {
   background-color: rgba(38, 0, 255, 0.75);
   transition: 0.15s ease-in;
+  cursor: pointer;
 }
 .gridOne-table-cell {
   border: 3px solid rgb(38, 0, 255);
   background-color: rgba(38, 0, 255, 0.1);
   transition: 0.15s ease-in;
+}
+.gridOne-table-cell:hover {
+  cursor: pointer;
 }
 .grid {
   width: 340px;
