@@ -140,7 +140,6 @@ function addGridListeners() {
         status.textContent = '';
         renderPlayerAttacks(this);
         CPU.receiveAttack(x, y);
-        console.log(CPU);
         cells[i].className += ' inactive';
       }
     });
@@ -149,7 +148,6 @@ function addGridListeners() {
       if (!p1.checkForLoss() && !CPU.checkForLoss()) {
         setTimeout(() => {
           p1.receiveCpuAttack();
-          console.log(p1);
           gameboard.className -= ' inactive';
           renderCPUattacks();
         }, 1000);
@@ -384,9 +382,6 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
         if ((i % 10) + length < 10) {
           cells[i].addEventListener('click', placeShipOnClick);
           cells[i].addEventListener('click', renderPlayerShips);
-          cells[i].addEventListener('click', () => {
-            console.log(p1.fleet);
-          });
           cells[i].addEventListener('mouseenter', showHorizontalShipPlacement);
           cells[i].addEventListener('mouseleave', hideHorizontalShipPlacement);
         }
@@ -396,9 +391,6 @@ function addShipPlacementListeners(shipLength, isHorizontal) {
       if (i + vertLength < 100) {
         cells[i].addEventListener('click', placeShipOnClick);
         cells[i].addEventListener('click', renderPlayerShips);
-        cells[i].addEventListener('click', () => {
-          console.log(p1.fleet);
-        });
         cells[i].addEventListener('mouseenter', showVerticalShipPlacement);
         cells[i].addEventListener('mouseleave', hideVerticalShipPlacement);
       }
@@ -427,7 +419,6 @@ function initializeGame() {
   addGridListeners();
   addShipPlacementListeners(ships[0][0], isHorizontal);
   randomizeShips(CPU);
-  console.log(CPU);
 }
 
 initializeGame();

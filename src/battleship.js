@@ -87,7 +87,6 @@ const randomizeShips = (player) => {
   for (let i = 0; i < ships.length; i++) {
     const shipLength = ships[i][0] - 1;
     player.placeShip(...ships[i], ...setRandomCoords(shipLength));
-    console.log(p1.fleet);
   }
 };
 
