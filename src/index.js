@@ -355,7 +355,7 @@ function placeShipOnClick() {
       removeListeners();
       addShipPlacementListeners(ships[0][0], isHorizontal);
     }
-  } else {
+  } else if (!checkForOccupation()) {
     p1.placeShip(
       shipLength + 1,
       shipName,
