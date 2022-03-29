@@ -11,7 +11,7 @@ This approach is conveniently and most importantly ties into my second 'first'. 
 The factory function approach was also a helpful (and sometimes painful) lesson in scope, which is something that always manages to surprise me.
 
 ## Live project demo
-:point_right: https://spghtti.github.io/ :point_left:
+:point_right: https://spghtti.github.io/Battleship :point_left:
 
 ## Built With
 
